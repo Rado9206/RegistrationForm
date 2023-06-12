@@ -40,11 +40,39 @@ const checkLength = (input, min) => {
 	}
 }
 
-checkPassword = (pass1, pass2) => {
-if (pass1.value !== pass2.value) {
-	showError(pass2, 'Hasła muszą być jednakowe!')
+const checkPassword = (pass1, pass2) => {
+	if (pass1.value !== pass2.value) {
+		showError(pass2, 'Hasła muszą być jednakowe!')
+	}
 }
+
+const checkMail = email => {
+	const re =
+		/^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|.(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,3}))$/
+
+	if (re.test(email.value)) {
+		clearError(email)
+	} else {
+		showError(email, 'Wpisz poprawny adres e-mail!')
+	}
 }
+
+const checkErrors = () => {
+
+	const allInputs = document.querySelectorAll('.form-box')
+	let errorCount = 0
+
+	allInputs.forEach(el => {
+		if(el.classList.contains('error')) {
+			errorCount++
+		}
+	})
+
+	if (errorCount === 0) {
+		popup.classList.add('show-popup')
+	}
+}
+
 
 sendBtn.addEventListener('click', e => {
 	e.preventDefault()
@@ -52,11 +80,14 @@ sendBtn.addEventListener('click', e => {
 	checkLength(userName, 5)
 	checkLength(pass1, 8)
 	checkPassword(pass1, pass2)
+	checkMail(email)
+	checkErrors()
 })
 
 clearBtn.addEventListener('click', e => {
 	e.preventDefault()
 	;[userName, pass1, pass2, email].forEach(el => {
 		el.value = ''
+		clearError(el)
 	})
 })
